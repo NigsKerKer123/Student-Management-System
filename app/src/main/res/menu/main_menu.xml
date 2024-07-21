@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/college"
+            android:title="Colleges"
+            android:icon="@drawable/ic_college"/>
+
+        <item android:id="@+id/course"
+            android:title="Courses"
+            android:icon="@drawable/ic_course"/>
+
+        <item android:id="@+id/section"
+            android:title="Sections"
+            android:icon="@drawable/ic_section"/>
+
+        <item android:id="@+id/student"
+            android:title="Students"
+            android:icon="@drawable/ic_section"/>
+
+        <item android:id="@+id/logout"
+            android:title="Logout"
+            android:icon="@drawable/ic_logout"/>
+    </group>
+</menu>
