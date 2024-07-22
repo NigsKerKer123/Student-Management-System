@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#997C7B7B"
-    tools:context=".college.MainActivity">
+    tools:context=".college.CollegeMainActivity">
 
     <ImageView
         android:id="@+id/header_image"

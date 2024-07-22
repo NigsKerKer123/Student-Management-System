@@ -15,7 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.sms.college.MainActivity;
+import com.example.sms.college.CollegeMainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -118,7 +118,7 @@ public class Register extends AppCompatActivity {
 
     private void reload(FirebaseUser user) {
         if (user != null) {
-            Intent intent = new Intent(Register.this, MainActivity.class);
+            Intent intent = new Intent(Register.this, CollegeMainActivity.class);
             startActivity(intent);
             finish();
         }

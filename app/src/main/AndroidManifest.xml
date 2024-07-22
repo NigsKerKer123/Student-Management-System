@@ -15,11 +15,12 @@
         android:theme="@style/Theme.SMS"
         tools:targetApi="31">
         <activity
+            android:name=".course.CourseMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".Register"
             android:exported="true"
-            android:theme="@style/Theme.Material3.Light.NoActionBar">
-        </activity>
-
+            android:theme="@style/Theme.Material3.Light.NoActionBar"></activity>
         <activity
             android:name=".Login"
             android:exported="true"
@@ -30,13 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".college.MainActivity"
-            android:exported="false"/>
+            android:name=".college.CollegeMainActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+
 </manifest>

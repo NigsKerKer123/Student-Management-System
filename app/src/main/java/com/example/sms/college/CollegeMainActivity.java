@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements CollegeItemListener {
+public class CollegeMainActivity extends AppCompatActivity implements CollegeItemListener {
         //firebase authentication
         private FirebaseAuth mAuth;
         FirebaseUser user;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             EdgeToEdge.enable(this);
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_college_main);
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
 
             //Dialog box initalization
             inflater = getLayoutInflater();
-            builder = new AlertDialog.Builder(MainActivity.this);
+            builder = new AlertDialog.Builder(CollegeMainActivity.this);
 
             //Checks kung naay naka logged in or not
             if (user == null){
-                Intent intent = new Intent(MainActivity.this, Login.class);
+                Intent intent = new Intent(CollegeMainActivity.this, Login.class);
                 startActivity(intent);
                 finish();
             }   else {
@@ -115,13 +115,13 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                 int id = item.getItemId();
 
                 if (id == R.id.college){
-                    Toast.makeText(MainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.course){
-                    Toast.makeText(MainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.section){
-                    Toast.makeText(MainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.student){
-                    Toast.makeText(MainActivity.this, "Students", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Students", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.logout){
                     logoutDialog.show();
                 }
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                     if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                         drawerLayout.closeDrawer(GravityCompat.START);
                     } else {
-                        MainActivity.super.onBackPressed();
+                        CollegeMainActivity.super.onBackPressed();
                     }
                 }
             };
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(MainActivity.this, "Failed to load colleges.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Failed to load colleges.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -194,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
         //logout user from firebase method
         public void logout(){
             mAuth.signOut();
-            Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(MainActivity.this, Login.class);
+            Toast.makeText(CollegeMainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(CollegeMainActivity.this, Login.class);
             startActivity(intent);
             finish();
         }
@@ -253,9 +253,9 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                     College college = new College(collegeId, collegeName);
                     collegeDataBase.child(collegeId).setValue(college);
 
-                    Toast.makeText(MainActivity.this, "College Added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "College Added", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Please enter a college name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Please enter a college name", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                 collegeName = EditCollegeNameEditText.getText().toString().trim();
 
                 if (collegeName.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter a college name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CollegeMainActivity.this, "Please enter a college name", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -312,9 +312,9 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             editCollegeDialog.dismiss();
-                            Toast.makeText(MainActivity.this, "College updated successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CollegeMainActivity.this, "College updated successfully", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "Failed to update college", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CollegeMainActivity.this, "Failed to update college", Toast.LENGTH_SHORT).show();
                         }
                     });
             });
@@ -326,9 +326,9 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
                 collegeIdRef.removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, "College deleted successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CollegeMainActivity.this, "College deleted successfully", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "Failed to delete college", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CollegeMainActivity.this, "Failed to delete college", Toast.LENGTH_SHORT).show();
                         }
                     });
             });
