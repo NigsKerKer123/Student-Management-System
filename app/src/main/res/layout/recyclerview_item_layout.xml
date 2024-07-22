@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
-        android:id="@+id/collegeName"
+        android:id="@+id/editRecordEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/anton"
@@ -51,9 +51,9 @@
         android:textSize="20dp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/collegeName"
-        app:layout_constraintBottom_toBottomOf="@id/collegeName"
-        app:layout_constraintStart_toEndOf="@id/collegeName"
+        app:layout_constraintTop_toTopOf="@id/editRecordEditText"
+        app:layout_constraintBottom_toBottomOf="@id/editRecordEditText"
+        app:layout_constraintStart_toEndOf="@id/editRecordEditText"
         android:layout_marginStart="8dp"/>
 
     <View
@@ -61,5 +61,5 @@
         android:layout_height="1dp"
         android:background="#1E88E5"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/collegeName"/>
+        app:layout_constraintTop_toBottomOf="@id/editRecordEditText"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

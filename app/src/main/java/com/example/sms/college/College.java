@@ -4,6 +4,10 @@ public class College {
     private String collegeName;
     private String collegeId;
 
+    public College(){
+
+    }
+
     public College(String collegeId, String collegeName) {
         this.collegeName = collegeName;
         this.collegeId = collegeId;

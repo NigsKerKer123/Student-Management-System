@@ -19,7 +19,7 @@ public class CollegeViewHolder extends RecyclerView.ViewHolder {
     public CollegeViewHolder(@NonNull View itemView) {
         super(itemView);
         number = itemView.findViewById(R.id.number);
-        collegeName = itemView.findViewById(R.id.collegeName);
+        collegeName = itemView.findViewById(R.id.editRecordEditText);
         collegeId = itemView.findViewById(R.id.collegeId);
         actionButton = itemView.findViewById(R.id.actionButton);
         mainLayout = itemView.findViewById(R.id.mainLayout);

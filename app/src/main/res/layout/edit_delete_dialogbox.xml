@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/collegeName"
+            android:id="@+id/editRecordEditText"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_input"
@@ -45,12 +45,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="@+id/collegeName"
-            app:layout_constraintStart_toStartOf="@+id/collegeName"
-            app:layout_constraintTop_toBottomOf="@+id/collegeName">
+            app:layout_constraintEnd_toEndOf="@+id/editRecordEditText"
+            app:layout_constraintStart_toStartOf="@+id/editRecordEditText"
+            app:layout_constraintTop_toBottomOf="@+id/editRecordEditText">
 
             <Button
-                android:id="@+id/editCollegeButton"
+                android:id="@+id/editRecordButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
@@ -58,7 +58,7 @@
                 android:textColor="@color/white" />
 
             <Button
-                android:id="@+id/deleteCollegeButton"
+                android:id="@+id/deleteRecordButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Delete"

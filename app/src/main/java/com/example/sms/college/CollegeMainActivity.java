@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sms.Login;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -229,10 +231,10 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         public void createAddCollegeDialogBox(){
             addCollegeDialogView = inflater.inflate(R.layout.add_dialogbox, null);
 
-            addCollegeButton = addCollegeDialogView.findViewById(R.id.addCollegeButton);
-            addCancelCollegeButton = addCollegeDialogView.findViewById(R.id.cancelCollegeButton);
+            addCollegeButton = addCollegeDialogView.findViewById(R.id.addRecordButton);
+            addCancelCollegeButton = addCollegeDialogView.findViewById(R.id.cancelAddRecordButton);
 
-            addCollegeNameEditText = addCollegeDialogView.findViewById(R.id.collegeName);
+            addCollegeNameEditText = addCollegeDialogView.findViewById(R.id.addRecordEditText);
             addCollegeButtonShowDialog = findViewById(R.id.addButtonShowDialog);
 
             AddDialogTextView = addCollegeDialogView.findViewById(R.id.addDialogTextView);
@@ -255,12 +257,27 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
                     String collegeId = collegeDataBase.push().getKey();
 
                     College college = new College(collegeId, collegeName);
-                    collegeDataBase.child(collegeId).setValue(college);
+                    collegeDataBase.child(collegeId).setValue(college)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Handle success
+                                    Toast.makeText(CollegeMainActivity.this, "College Added", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Handle failure
+                                    Toast.makeText(CollegeMainActivity.this, "Failed to Add College", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                     Toast.makeText(CollegeMainActivity.this, "College Added", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(CollegeMainActivity.this, "Please enter a college name", Toast.LENGTH_SHORT).show();
                 }
+                addCollegeNameEditText.setText(null);
             });
 
             //to close add college dialog box
@@ -277,6 +294,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
 
             Intent intent = new Intent(CollegeMainActivity.this, CourseMainActivity.class);
             intent.putExtra("COLLEGE_NAME", collegeName);
+            intent.putExtra("COLLEGE_ID", collegeId);
             startActivity(intent);
         }
 
@@ -296,9 +314,9 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         public void createEditCollegeDialogBox(){
             editCollegeDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
 
-            editCollegeButton = editCollegeDialogView.findViewById(R.id.editCollegeButton);
-            deleteCollegeButton = editCollegeDialogView.findViewById(R.id.deleteCollegeButton);
-            EditCollegeNameEditText = editCollegeDialogView.findViewById(R.id.collegeName);
+            editCollegeButton = editCollegeDialogView.findViewById(R.id.editRecordButton);
+            deleteCollegeButton = editCollegeDialogView.findViewById(R.id.deleteRecordButton);
+            EditCollegeNameEditText = editCollegeDialogView.findViewById(R.id.editRecordEditText);
 
             editDeleteDialogTextView = editCollegeDialogView.findViewById(R.id.editDeleteDialogTextView);
             editDeleteDialogTextView.setText("Edit College");
@@ -318,6 +336,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
                 }
 
                 updates.put("collegeName", collegeName);
+
                 collegeIdRef.updateChildren(updates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

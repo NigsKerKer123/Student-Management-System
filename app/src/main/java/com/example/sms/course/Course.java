@@ -4,16 +4,18 @@ public class Course {
     private String courseId;
     private String courseName;
 
+    public Course(){
+    }
+
     public Course(String courseId, String courseName) {
         this.courseId = courseId;
         this.courseName = courseName;
     }
-
-    public String getCollegeId() {
+    public String getCourseId() {
         return courseId;
     }
 
-    public String getCollegeName() {
+    public String getCourseName() {
         return courseName;
     }
 

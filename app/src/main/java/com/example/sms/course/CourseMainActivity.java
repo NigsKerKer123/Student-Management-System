@@ -2,10 +2,12 @@ package com.example.sms.course;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,33 +21,58 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
+import com.example.sms.college.CollegeMainActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CourseMainActivity extends AppCompatActivity {
+public class CourseMainActivity extends AppCompatActivity implements CourseItemListener{
     //firebase auth
     private FirebaseAuth mAuth;
     FirebaseUser user;
 
+    //Firebase database
+    FirebaseDatabase database;
+    DatabaseReference coursesRef, databaseReference, courseIdRef;
+
     //UI drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    TextView textViewEmail;
+    TextView textViewEmail, addDialogTextView, editDialogTextView;
     ActionBarDrawerToggle drawerToggle;
 
     //Dialog box UI
-    Button btnYes, btnNo;
-    View logoutDialogView;
+    Button btnYes, btnNo, addCourseButton, cancelAddCourseButton, editCourseButton, deleteCourseButton;
+    View logoutDialogView, addCourseDialogView, editCourseDialogView;
     AlertDialog.Builder builder;
-    AlertDialog logoutDialog;
+    AlertDialog logoutDialog, addDialog, editDialog;
     LayoutInflater inflater;
+    EditText addRecordEditText, editRecordEditText;
+    FloatingActionButton addCourseButtonShowDialog;
+
+    //Course
+    String courseID, courseName;
+    Map<String, Object> updates;
+
+    //College
+    String collegeID, collegeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +85,32 @@ public class CourseMainActivity extends AppCompatActivity {
             return insets;
         });
 
+        //To get the data from the college activity via intent
+        Intent intent = getIntent();
+        collegeName = intent.getStringExtra("COLLEGE_NAME");
+        collegeID = intent.getStringExtra("COLLEGE_ID");
+        if (collegeName != null && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(collegeName);
+        }
+
         //Firebase authentication initialization
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        //Firebase database initialization
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        coursesRef = databaseReference.child("Colleges").child(collegeID).child("Courses");
 
         //Dialog box initalization
         inflater = getLayoutInflater();
         builder = new AlertDialog.Builder(CourseMainActivity.this);
 
-        //To get the title of the college via intent
-        Intent intent = getIntent();
-        String collegeName = intent.getStringExtra("COLLEGE_NAME");
-        if (collegeName != null && getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(collegeName);
-        }
-
+        //method calls to create objects
         createLogoutDialogBox();
         createDrawerLayout();
+        createRecyclerView();
+        createAddCourseDialogBox();
+        createEditCourseDialogBox();
     }
 
     //method to create sidebar
@@ -150,5 +186,156 @@ public class CourseMainActivity extends AppCompatActivity {
     public void createRecyclerView(){
         ArrayList<ItemCourse> items = new ArrayList<>();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        CourseAdapter adapter = new CourseAdapter(this, items, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Reference to Firebase database
+        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference()
+                .child("Colleges")
+                .child(collegeID)
+                .child("Courses");
+
+        coursesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                items.clear();
+                int num = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    num++;
+                    Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
+                    String courseName = (String) data.get("courseName");
+                    String courseId = (String) data.get("courseId");
+
+                    items.add(new ItemCourse(String.valueOf(num), courseName, courseId));
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors
+                Toast.makeText(CourseMainActivity.this, "Failed to load courses.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        adapter.notifyDataSetChanged();
+    }
+
+    //Item clicke listener for the course items
+    @Override
+    public void onItemClicked(ItemCourse itemCourse) {
+        Toast.makeText(CourseMainActivity.this, itemCourse.courseName, Toast.LENGTH_SHORT).show();
+    }
+
+    //Action Button listeners for the course items
+    @Override
+    public void actionButton(ItemCourse itemCourse) {
+        courseIdRef = coursesRef.child(itemCourse.courseId);
+        editRecordEditText.setText(itemCourse.courseName);
+        editDialog.show();
+    }
+
+    //To create add course dialog box
+    public void createAddCourseDialogBox(){
+        addCourseDialogView = inflater.inflate(R.layout.add_dialogbox, null);
+
+        addRecordEditText = addCourseDialogView.findViewById(R.id.addRecordEditText);
+        addCourseButtonShowDialog = findViewById(R.id.addButtonShowDialog);
+        addCourseButton = addCourseDialogView.findViewById(R.id.addRecordButton);
+        cancelAddCourseButton = addCourseDialogView.findViewById(R.id.cancelAddRecordButton);
+        addDialogTextView = addCourseDialogView.findViewById(R.id.addDialogTextView);
+        addDialogTextView.setText("Add Course");
+        addRecordEditText.setHint("Course Name");
+
+        builder.setView(addCourseDialogView);
+        addDialog = builder.create();
+
+        //show add course dialog box
+        addCourseButtonShowDialog.setOnClickListener(v -> {
+            addDialog.show();
+        });
+
+        //Add course button
+        addCourseButton.setOnClickListener(v -> {
+            courseName = addRecordEditText.getText().toString().trim();
+
+            if (!courseName.isEmpty()){
+                addDialog.dismiss();
+                String courseID = coursesRef.push().getKey();
+
+                Course course = new Course(courseID, courseName);
+
+                // Save the course to Firebase
+                coursesRef.child(courseID).setValue(course)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Handle success
+                            Toast.makeText(CourseMainActivity.this, "Course Added", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Handle failure
+                            Toast.makeText(CourseMainActivity.this, "Failed to Add Course", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            }else {
+                Toast.makeText(CourseMainActivity.this, "Please enter a course name", Toast.LENGTH_SHORT).show();
+            }
+            addRecordEditText.setText(null);
+        });
+
+        //close add course dialogbox
+        cancelAddCourseButton.setOnClickListener(v -> {
+            addDialog.dismiss();
+        });
+    }
+
+    public void createEditCourseDialogBox(){
+        editCourseDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
+        editRecordEditText = editCourseDialogView.findViewById(R.id.editRecordEditText);
+        editCourseButton = editCourseDialogView.findViewById(R.id.editRecordButton);
+        deleteCourseButton = editCourseDialogView.findViewById(R.id.deleteRecordButton);
+
+        builder.setView(editCourseDialogView);
+        editDialog = builder.create();
+
+        updates = new HashMap<>();
+        editRecordEditText.setHint("Course Name");
+
+        //Edit course button
+        editCourseButton.setOnClickListener(v -> {
+            courseName = editRecordEditText.getText().toString().trim();
+
+            if (courseName.isEmpty()){
+                Toast.makeText(CourseMainActivity.this, "Please enter a course name", Toast.LENGTH_SHORT).show();
+            }
+
+            updates.put("courseName", courseName);
+
+            courseIdRef.updateChildren(updates).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(CourseMainActivity.this, "Course Updated", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(CourseMainActivity.this, "Failed to Update Course", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        //Delete course button
+        deleteCourseButton.setOnClickListener(v -> {
+            courseIdRef.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(CourseMainActivity.this, "Course Deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CourseMainActivity.this, "Failed to Delete Course", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 }

@@ -9,7 +9,7 @@
     tools:context=".college.CollegeMainActivity">
 
     <ImageView
-        android:id="@+id/"
+        android:id="@+id/header_image"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -26,7 +26,7 @@
         android:background="#80000000"
         app:layout_constraintTop_toTopOf="@id/header_image"
         app:layout_constraintBottom_toBottomOf="@id/header_image"
-        app:layout_constraintStart_toStartOf="@id/header_iheader_imagemage"
+        app:layout_constraintStart_toStartOf="@id/header_image"
         app:layout_constraintEnd_toEndOf="@id/header_image" />
 
     <TextView
