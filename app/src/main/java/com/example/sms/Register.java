@@ -98,11 +98,10 @@ public class Register extends AppCompatActivity {
                 });
         });
 
-        //login
+        //goto login activity
         buttonBack.setOnClickListener(v -> {
             Intent intent = new Intent(Register.this, Login.class);
             startActivity(intent);
-            finish();
         });
     }
 

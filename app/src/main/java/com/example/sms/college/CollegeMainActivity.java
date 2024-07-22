@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
+import com.example.sms.course.CourseMainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,7 +72,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             super.onCreate(savedInstanceState);
             EdgeToEdge.enable(this);
             setContentView(R.layout.activity_college_main);
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.college_drawer_layout), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
@@ -80,13 +81,15 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             //para ma ilisan ang title sa activity
             getSupportActionBar().setTitle("Colleges");
 
-            //Firebase initialization
+            //Firebase authentication initialization
             mAuth = FirebaseAuth.getInstance();
             user = mAuth.getCurrentUser();
+
+            //firebase database initialization
             database = FirebaseDatabase.getInstance();
             collegeDataBase = database.getReference("Colleges");
 
-            drawerLayout = findViewById(R.id.drawer_layout);
+            drawerLayout = findViewById(R.id.college_drawer_layout);
             navigationView = findViewById(R.id.nav_view);
             textViewEmail = navigationView.getHeaderView(0).findViewById(R.id.email);
 
@@ -130,25 +133,30 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
                 return true;
             });
 
-            //On back
+            //On back to close drawer
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
-                    if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                    } else {
-                        CollegeMainActivity.super.onBackPressed();
+                    try {
+                        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                            drawerLayout.closeDrawer(GravityCompat.START);
+                        } else {
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(CollegeMainActivity.this, "There's an Error on your onback shit", Toast.LENGTH_SHORT).show();
                     }
                 }
             };
 
             getOnBackPressedDispatcher().addCallback(this, callback);
+
             recyclerView();
 
             //Dialog box
-            createLogoutDialog();
-            createAddCollegeDialog();
-            createEditCollegeDialog();
+            createLogoutDialogBox();
+            createAddCollegeDialogBox();
+            createEditCollegeDialogBox();
         }
 
         //to toggle drawer
@@ -191,17 +199,8 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             });
         }
 
-        //logout user from firebase method
-        public void logout(){
-            mAuth.signOut();
-            Toast.makeText(CollegeMainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(CollegeMainActivity.this, Login.class);
-            startActivity(intent);
-            finish();
-        }
-
         //Method to create logout dialogbox
-        public void createLogoutDialog() {
+        public void createLogoutDialogBox() {
             logoutDialogView = inflater.inflate(R.layout.logout_dialogbox, null);
 
             btnYes = logoutDialogView.findViewById(R.id.btn_yes);
@@ -210,9 +209,14 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             builder.setView(logoutDialogView);
             logoutDialog = builder.create();
 
+            //Logout button
             btnYes.setOnClickListener(v -> {
                 logoutDialog.dismiss();
-                logout();
+                mAuth.signOut();
+                Toast.makeText(CollegeMainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CollegeMainActivity.this, Login.class);
+                startActivity(intent);
+                finish();
             });
 
             btnNo.setOnClickListener(v -> {
@@ -222,14 +226,14 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         }
 
         //method to create add college dialogbox
-        public void createAddCollegeDialog(){
+        public void createAddCollegeDialogBox(){
             addCollegeDialogView = inflater.inflate(R.layout.add_dialogbox, null);
 
             addCollegeButton = addCollegeDialogView.findViewById(R.id.addCollegeButton);
             addCancelCollegeButton = addCollegeDialogView.findViewById(R.id.cancelCollegeButton);
 
             addCollegeNameEditText = addCollegeDialogView.findViewById(R.id.collegeName);
-            addCollegeButtonShowDialog = findViewById(R.id.addCollegeButtonShowDialog);
+            addCollegeButtonShowDialog = findViewById(R.id.addButtonShowDialog);
 
             AddDialogTextView = addCollegeDialogView.findViewById(R.id.addDialogTextView);
             AddDialogTextView.setText("Add College");
@@ -268,6 +272,11 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         //College item click listener para ma intent kas lahi na activity
         @Override
         public void onItemClicked(ItemCollege itemCollege) {
+            collegeId = itemCollege.getCollegeId();
+            collegeName = itemCollege.getCollegeName();
+
+            Intent intent = new Intent(CollegeMainActivity.this, CourseMainActivity.class);
+            startActivity(intent);
         }
 
         //Edit button on the items
@@ -283,7 +292,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         }
 
         //create edit college dialog
-        public void createEditCollegeDialog(){
+        public void createEditCollegeDialogBox(){
             editCollegeDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
 
             editCollegeButton = editCollegeDialogView.findViewById(R.id.editCollegeButton);
