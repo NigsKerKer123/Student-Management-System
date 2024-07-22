@@ -57,12 +57,16 @@ public class CourseMainActivity extends AppCompatActivity {
             return insets;
         });
 
-        //para ma ilisan ang title sa activity
-        getSupportActionBar().setTitle("Courses");
-
         //Firebase authentication initialization
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        //To get the title of the college via intent
+        Intent intent = getIntent();
+        String collegeName = intent.getStringExtra("COLLEGE_NAME");
+        if (collegeName != null && getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(collegeName);
+        }
 
         createDrawerLayout();
     }

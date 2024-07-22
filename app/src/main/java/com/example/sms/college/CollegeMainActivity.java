@@ -276,6 +276,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             collegeName = itemCollege.getCollegeName();
 
             Intent intent = new Intent(CollegeMainActivity.this, CourseMainActivity.class);
+            intent.putExtra("COLLEGE_NAME", collegeName);
             startActivity(intent);
         }
 
