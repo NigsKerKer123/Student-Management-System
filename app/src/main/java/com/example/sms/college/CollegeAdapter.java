@@ -25,7 +25,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeViewHolder>{
     @NonNull
     @Override
     public CollegeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new CollegeViewHolder(LayoutInflater.from(context).inflate(R.layout.item_college_layout, parent, false));
+        return new CollegeViewHolder(LayoutInflater.from(context).inflate(R.layout.recyclerview_item_layout, parent, false));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CollegeAdapter extends RecyclerView.Adapter<CollegeViewHolder>{
         ItemCollege itemCollege = items.get(position);
         holder.collegeName.setText(itemCollege.getCollegeName());
         holder.number.setText(itemCollege.getNumber());
-        holder.collegeId.setText(itemCollege.getNumber());
+        holder.collegeId.setText(itemCollege.getCollegeId());
 
         // Set click listener on the cardView
         holder.mainLayout.setOnClickListener(v -> listener.onItemClicked(itemCollege));

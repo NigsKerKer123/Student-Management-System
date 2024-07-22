@@ -168,7 +168,7 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             return super.onOptionsItemSelected(item);
         }
 
-        //This is the college recycler view
+        //Method to create RecyclerView
         public void recyclerView(){
             ArrayList<ItemCollege> items = new ArrayList<>();
             RecyclerView recyclerView = findViewById(R.id.recycler_view);

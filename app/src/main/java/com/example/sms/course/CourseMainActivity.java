@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -20,13 +19,15 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
-import com.example.sms.college.CollegeMainActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 
 public class CourseMainActivity extends AppCompatActivity {
     //firebase auth
@@ -61,6 +62,10 @@ public class CourseMainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        //Dialog box initalization
+        inflater = getLayoutInflater();
+        builder = new AlertDialog.Builder(CourseMainActivity.this);
+
         //To get the title of the college via intent
         Intent intent = getIntent();
         String collegeName = intent.getStringExtra("COLLEGE_NAME");
@@ -68,6 +73,7 @@ public class CourseMainActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(collegeName);
         }
 
+        createLogoutDialogBox();
         createDrawerLayout();
     }
 
@@ -141,5 +147,8 @@ public class CourseMainActivity extends AppCompatActivity {
         });
     }
 
-
+    public void createRecyclerView(){
+        ArrayList<ItemCourse> items = new ArrayList<>();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+    }
 }
