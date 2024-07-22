@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
         DrawerLayout drawerLayout;
         NavigationView navigationView;
         ActionBarDrawerToggle drawerToggle;
-        TextView textViewEmail;
+        TextView textViewEmail, AddDialogTextView, editDeleteDialogTextView;
         View logoutDialogView, addCollegeDialogView, editCollegeDialogView;
         Button btnYes, btnNo, addCollegeButton, addCancelCollegeButton, editCollegeButton, deleteCollegeButton;
         AlertDialog.Builder builder;
@@ -223,14 +223,16 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
 
         //method to create add college dialogbox
         public void createAddCollegeDialog(){
-            addCollegeDialogView = inflater.inflate(R.layout.add_college_dialogbox, null);
+            addCollegeDialogView = inflater.inflate(R.layout.add_dialogbox, null);
 
             addCollegeButton = addCollegeDialogView.findViewById(R.id.addCollegeButton);
             addCancelCollegeButton = addCollegeDialogView.findViewById(R.id.cancelCollegeButton);
 
             addCollegeNameEditText = addCollegeDialogView.findViewById(R.id.collegeName);
-
             addCollegeButtonShowDialog = findViewById(R.id.addCollegeButtonShowDialog);
+
+            AddDialogTextView = addCollegeDialogView.findViewById(R.id.addDialogTextView);
+            AddDialogTextView.setText("Add College");
 
             builder.setView(addCollegeDialogView);
             addCollegeDialog = builder.create();
@@ -282,11 +284,14 @@ public class MainActivity extends AppCompatActivity implements CollegeItemListen
 
         //create edit college dialog
         public void createEditCollegeDialog(){
-            editCollegeDialogView = inflater.inflate(R.layout.edit_delete_college_dialogbox, null);
+            editCollegeDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
 
             editCollegeButton = editCollegeDialogView.findViewById(R.id.editCollegeButton);
             deleteCollegeButton = editCollegeDialogView.findViewById(R.id.deleteCollegeButton);
             EditCollegeNameEditText = editCollegeDialogView.findViewById(R.id.collegeName);
+
+            editDeleteDialogTextView = editCollegeDialogView.findViewById(R.id.editDeleteDialogTextView);
+            editDeleteDialogTextView.setText("Edit College");
 
             builder.setView(editCollegeDialogView);
             editCollegeDialog = builder.create();

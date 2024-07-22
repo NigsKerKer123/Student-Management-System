@@ -14,14 +14,15 @@
         android:paddingBottom="20dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/addDialogTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/anton"
-            android:text="Add College"
+            android:text="#######"
             android:textColor="@color/black"
             android:textSize="30dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.506"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,9 +37,9 @@
             android:inputType="textEmailAddress"
             android:minHeight="48dp"
             android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/textView"
-            app:layout_constraintStart_toStartOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintEnd_toEndOf="@+id/addDialogTextView"
+            app:layout_constraintStart_toStartOf="@+id/addDialogTextView"
+            app:layout_constraintTop_toBottomOf="@+id/addDialogTextView" />
 
         <LinearLayout
             android:layout_width="wrap_content"
