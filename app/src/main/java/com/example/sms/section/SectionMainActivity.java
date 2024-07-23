@@ -318,7 +318,7 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
 
         updates = new HashMap<>();
         editRecordEditText.setHint("Section Name");
-        editDialogTextView.setText("Add Section");
+        editDialogTextView.setText("Edit Section");
 
         //Edit Section button
         editSectionButton.setOnClickListener(v -> {

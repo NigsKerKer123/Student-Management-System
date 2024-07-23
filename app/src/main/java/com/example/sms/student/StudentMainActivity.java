@@ -42,6 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StudentMainActivity extends AppCompatActivity implements StudentItemListener{
@@ -127,6 +128,7 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
         createLogoutDialogBox();
         createRecyclerView();
         createAddStudentDialogBox();
+        createEditStudentDialogBox();
     }
 
     public void createDrawerLayout(){
@@ -232,12 +234,14 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
 
     @Override
     public void onItemClicked(ItemStudent itemStudent) {
-
+        Toast.makeText(StudentMainActivity.this, itemStudent.getStudentName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void actionButton(ItemStudent itemStudent) {
-
+        studentIdRef = studentRef.child(itemStudent.getStudentId());
+        editRecordEditText.setText(itemStudent.getStudentName());
+        editDialog.show();
     }
 
     //Method to create Add Dialog Box
@@ -297,6 +301,53 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
         //cancel add section button
         cancelAddStudentButton.setOnClickListener(v -> {
             addDialog.dismiss();
+        });
+    }
+
+    public void createEditStudentDialogBox(){
+        editStudentDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
+        editRecordEditText = editStudentDialogView.findViewById(R.id.editRecordEditText);
+        editStudentButton = editStudentDialogView.findViewById(R.id.editRecordButton);
+        deleteStudentButton = editStudentDialogView.findViewById(R.id.deleteRecordButton);
+        editDialogTextView = editStudentDialogView.findViewById(R.id.editDeleteDialogTextView);
+
+        builder.setView(editStudentDialogView);
+        editDialog = builder.create();
+
+        updates = new HashMap<>();
+        editRecordEditText.setHint("Student Name");
+        editDialogTextView.setText("Edit Student");
+
+        //Edit Section button
+        editStudentButton.setOnClickListener(v -> {
+            studentName = editRecordEditText.getText().toString().trim();
+
+            if (studentName.isEmpty()){
+                Toast.makeText(StudentMainActivity.this, "Please enter a Student", Toast.LENGTH_SHORT).show();
+            }
+
+            updates.put("studentName", studentName);
+
+            studentIdRef.updateChildren(updates).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(StudentMainActivity.this, "Student Updated", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(StudentMainActivity.this, "Failed to Update Student", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        //Delete section button
+        deleteStudentButton.setOnClickListener(v -> {
+            studentIdRef.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(StudentMainActivity.this, "Student Deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(StudentMainActivity.this, "Failed to Delete Student", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }
