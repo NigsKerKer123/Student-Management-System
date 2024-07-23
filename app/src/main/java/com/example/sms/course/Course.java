@@ -20,6 +20,6 @@ public class Course {
     }
 
     public void setCollegeName(String collegeName) {
-        this.courseName = collegeName;
+        this.courseName = courseName;
     }
 }

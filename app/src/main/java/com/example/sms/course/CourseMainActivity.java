@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sms.Login;
 import com.example.sms.R;
 import com.example.sms.college.CollegeMainActivity;
+import com.example.sms.section.SectionMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -225,7 +226,12 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
     //Item clicke listener for the course items
     @Override
     public void onItemClicked(ItemCourse itemCourse) {
-        Toast.makeText(CourseMainActivity.this, itemCourse.courseName, Toast.LENGTH_SHORT).show();
+        courseID = itemCourse.getCourseId();
+        collegeName = itemCourse.getCourseName();
+        Intent intent = new Intent(CourseMainActivity.this, SectionMainActivity.class);
+        intent.putExtra("COURSE_NAME", collegeName);
+        intent.putExtra("COURSE_ID", courseID);
+        startActivity(intent);
     }
 
     //Action Button listeners for the course items

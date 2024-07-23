@@ -1,4 +1,4 @@
-package com.example.sms.course;
+package com.example.sms.section;
 
 import android.view.View;
 import android.widget.TextView;
@@ -9,18 +9,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.R;
 
-public class CourseViewHolder extends RecyclerView.ViewHolder{
+public class SectionViewHolder extends RecyclerView.ViewHolder{
     TextView number;
-    TextView courseName;
-    TextView courseId;
+    TextView sectionName;
+    TextView sectionId;
     TextView actionButton;
     ConstraintLayout mainLayout;
 
-    public CourseViewHolder(@NonNull View itemView) {
+    public SectionViewHolder(@NonNull View itemView) {
         super(itemView);
         number = itemView.findViewById(R.id.number);
-        courseName = itemView.findViewById(R.id.editRecordEditText);
-        courseId = itemView.findViewById(R.id.recordID);
+        sectionName = itemView.findViewById(R.id.editRecordEditText);
+        sectionId = itemView.findViewById(R.id.recordID);
         actionButton = itemView.findViewById(R.id.actionButton);
         mainLayout = itemView.findViewById(R.id.mainLayout);
     }

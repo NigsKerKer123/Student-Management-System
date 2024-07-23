@@ -1,8 +1,8 @@
 package com.example.sms.course;
 
 public class ItemCourse {
-    String courseName;
     String number;
+    String courseName;
     String courseId;
 
     public ItemCourse(String number, String courseName, String courseId) {
@@ -19,6 +19,7 @@ public class ItemCourse {
     public String getCourseId() {
         return courseId;
     }
+
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
