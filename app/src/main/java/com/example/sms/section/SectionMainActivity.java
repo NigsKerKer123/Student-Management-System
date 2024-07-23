@@ -20,16 +20,21 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
+import com.example.sms.course.ItemCourse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class SectionMainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class SectionMainActivity extends AppCompatActivity implements SectionItemListener{
     //firebase auth
     private FirebaseAuth mAuth;
     FirebaseUser user;
@@ -49,7 +54,7 @@ public class SectionMainActivity extends AppCompatActivity {
     EditText addRecordEditText, editRecordEditText;
     FloatingActionButton addCourseButtonShowDialog;
 
-    //Course
+    //Courses data came from the course activity through intent
     String courseId, courseName;
 
     @Override
@@ -81,6 +86,7 @@ public class SectionMainActivity extends AppCompatActivity {
         //method calls to create objects
         createLogoutDialogBox();
         createDrawerLayout();
+        createRecyclerView();
     }
 
     public void createDrawerLayout(){
@@ -151,4 +157,32 @@ public class SectionMainActivity extends AppCompatActivity {
             logoutDialog.dismiss();
         });
     }
+
+    public void createRecyclerView(){
+        ArrayList<ItemSection> items = new ArrayList<>();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        SectionAdapter adapter = new SectionAdapter(this, items, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        items.add(new ItemSection("1", "3B", "123"));
+        items.add(new ItemSection("1", "3B", "123"));
+        items.add(new ItemSection("1", "3B", "123"));
+        items.add(new ItemSection("1", "3B", "123"));
+    }
+
+
+    //Section on item clicked listerner
+    @Override
+    public void onItemClicked(ItemSection itemSection) {
+
+    }
+
+    //action button on click listener
+    @Override
+    public void actionButton(ItemSection itemSection) {
+
+    }
+
+
 }
