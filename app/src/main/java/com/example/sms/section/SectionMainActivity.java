@@ -27,35 +27,54 @@ import com.example.sms.Login;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
 import com.example.sms.course.ItemCourse;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SectionMainActivity extends AppCompatActivity implements SectionItemListener{
     //firebase auth
     private FirebaseAuth mAuth;
     FirebaseUser user;
 
+    //Firebase database
+    FirebaseDatabase database;
+    DatabaseReference sectionRef, databaseReference, sectionIdRef;
+
     //UI drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    TextView textViewEmail;
+    TextView textViewEmail, addDialogTextView, editDialogTextView;
     ActionBarDrawerToggle drawerToggle;
 
     //Dialog box UI
-    Button btnYes, btnNo, addCourseButton, cancelAddCourseButton, editCourseButton, deleteCourseButton;
-    View logoutDialogView, addCourseDialogView, editCourseDialogView;
+    Button btnYes, btnNo, addSectionButton, cancelAddSectionButton, editSectionButton, deleteSectionButton;
+    View logoutDialogView, addSectionDialogView, editSectionDialogView;
     AlertDialog.Builder builder;
     AlertDialog logoutDialog, addDialog, editDialog;
     LayoutInflater inflater;
     EditText addRecordEditText, editRecordEditText;
-    FloatingActionButton addCourseButtonShowDialog;
+    FloatingActionButton addSectionButtonShowDialog;;
+
+    //Section
+    String sectionId, sectionName;
+    Map<String, Object> updates;
 
     //Courses data came from the course activity through intent
     String courseId, courseName;
+
+    //College data came from the course activity through intent
+    String collegeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +86,13 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         //To get the data from the college activity via intent
         Intent intent = getIntent();
         courseName = intent.getStringExtra("COURSE_NAME");
         courseId = intent.getStringExtra("COURSE_ID");
+        collegeId = intent.getStringExtra("COLLEGE_ID");
+
         if (courseName != null && getSupportActionBar() != null) {
             getSupportActionBar().setTitle(courseName);
         }
@@ -78,6 +100,15 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         //Firebase authentication initialization
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        //Firebase database initialization
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        sectionRef = databaseReference
+                .child("Colleges")
+                .child(collegeId)
+                .child("Courses")
+                .child(courseId)
+                .child("Section");
 
         //Dialog box initialization
         inflater = getLayoutInflater();
@@ -87,6 +118,7 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         createLogoutDialogBox();
         createDrawerLayout();
         createRecyclerView();
+        createAddSectionDialogBox();
     }
 
     public void createDrawerLayout(){
@@ -165,10 +197,28 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        items.add(new ItemSection("1", "3B", "123"));
-        items.add(new ItemSection("1", "3B", "123"));
-        items.add(new ItemSection("1", "3B", "123"));
-        items.add(new ItemSection("1", "3B", "123"));
+        sectionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                items.clear();
+                int num = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    num++;
+                    Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
+                    String sectionName = (String) data.get("sectionName");
+                    String sectionId = (String) data.get("sectionId");
+
+                    items.add(new ItemSection(String.valueOf(num), sectionName, sectionId));
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors
+                Toast.makeText(SectionMainActivity.this, "Failed to load Sections.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -184,5 +234,63 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
 
     }
 
+    //Method to create Add Dialog Box
+    public void createAddSectionDialogBox(){
+        addSectionDialogView = inflater.inflate(R.layout.add_dialogbox, null);
+        addRecordEditText = addSectionDialogView.findViewById(R.id.addRecordEditText);
+        addSectionButtonShowDialog = findViewById(R.id.addButtonShowDialog);
+        addSectionButton = addSectionDialogView.findViewById(R.id.addRecordButton);
+        cancelAddSectionButton = addSectionDialogView.findViewById(R.id.cancelAddRecordButton);
+        addDialogTextView = addSectionDialogView.findViewById(R.id.addDialogTextView);
+        addDialogTextView.setText("Add Section");
+        addRecordEditText.setHint("Section Name");
 
+        builder.setView(addSectionDialogView);
+        addDialog = builder.create();
+
+        //Show add section dialog box
+        addSectionButtonShowDialog.setOnClickListener(v -> {
+            addDialog.show();
+        });
+
+        //add section button
+        addSectionButton.setOnClickListener(v -> {
+            sectionName = addRecordEditText.getText().toString().trim();
+
+            if (!sectionName.isEmpty()){
+                addDialog.dismiss();
+                String sectionId = sectionRef.push().getKey();
+
+                Section section = new Section(sectionId, sectionName);
+
+                // Save the course to Firebase
+                assert sectionId != null;
+                sectionRef.child(sectionId).setValue(section)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            addDialog.dismiss();
+
+                            // Handle success
+                            Toast.makeText(SectionMainActivity.this, "Section Added", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Handle failure
+                            Toast.makeText(SectionMainActivity.this, "Failed to Add Section", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            } else{
+                Toast.makeText(SectionMainActivity.this, "Please enter a section name", Toast.LENGTH_SHORT).show();
+            }
+            addRecordEditText.setText(null);
+        });
+
+        //cancel add section button
+        cancelAddSectionButton.setOnClickListener(v -> {
+            addDialog.dismiss();
+        });
+    }
 }

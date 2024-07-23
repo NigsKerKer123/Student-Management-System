@@ -2,7 +2,6 @@ package com.example.sms.course;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
-import com.example.sms.college.CollegeMainActivity;
 import com.example.sms.section.SectionMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +48,6 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
     FirebaseUser user;
 
     //Firebase database
-    FirebaseDatabase database;
     DatabaseReference coursesRef, databaseReference, courseIdRef;
 
     //UI drawer layout
@@ -100,7 +97,10 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
 
         //Firebase database initialization
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        coursesRef = databaseReference.child("Colleges").child(collegeID).child("Courses");
+        coursesRef = databaseReference
+                .child("Colleges")
+                .child(collegeID)
+                .child("Courses");
 
         //Dialog box initalization
         inflater = getLayoutInflater();
@@ -191,12 +191,6 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Reference to Firebase database
-        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference()
-                .child("Colleges")
-                .child(collegeID)
-                .child("Courses");
-
         coursesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -231,6 +225,7 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         Intent intent = new Intent(CourseMainActivity.this, SectionMainActivity.class);
         intent.putExtra("COURSE_NAME", collegeName);
         intent.putExtra("COURSE_ID", courseID);
+        intent.putExtra("COLLEGE_ID", collegeID);
         startActivity(intent);
     }
 
@@ -267,16 +262,18 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
             courseName = addRecordEditText.getText().toString().trim();
 
             if (!courseName.isEmpty()){
-                addDialog.dismiss();
                 String courseID = coursesRef.push().getKey();
 
                 Course course = new Course(courseID, courseName);
 
                 // Save the course to Firebase
+                assert courseID != null;
                 coursesRef.child(courseID).setValue(course)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            addDialog.dismiss();
+
                             // Handle success
                             Toast.makeText(CourseMainActivity.this, "Course Added", Toast.LENGTH_SHORT).show();
                         }
