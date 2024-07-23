@@ -88,7 +88,7 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         collegeName = intent.getStringExtra("COLLEGE_NAME");
         collegeID = intent.getStringExtra("COLLEGE_ID");
         if (collegeName != null && getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(collegeName);
+            getSupportActionBar().setTitle(collegeName  + " -> Courses");
         }
 
         //Firebase authentication initialization

@@ -96,7 +96,7 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         collegeId = intent.getStringExtra("COLLEGE_ID");
 
         if (courseName != null && getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(courseName);
+            getSupportActionBar().setTitle(courseName  + " -> Sections");
         }
 
         //Firebase authentication initialization
