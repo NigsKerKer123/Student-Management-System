@@ -20,20 +20,31 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.R;
+import com.example.sms.section.ItemSection;
+import com.example.sms.section.Section;
+import com.example.sms.section.SectionAdapter;
 import com.example.sms.section.SectionMainActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
 
-public class StudentMainActivity extends AppCompatActivity {
+public class StudentMainActivity extends AppCompatActivity implements StudentItemListener{
     //firebase auth
     private FirebaseAuth mAuth;
     FirebaseUser user;
@@ -114,6 +125,8 @@ public class StudentMainActivity extends AppCompatActivity {
         //method calls to create objects
         createDrawerLayout();
         createLogoutDialogBox();
+        createRecyclerView();
+        createAddStudentDialogBox();
     }
 
     public void createDrawerLayout(){
@@ -187,6 +200,103 @@ public class StudentMainActivity extends AppCompatActivity {
 
     //Method to create recycler view for student list
     public void createRecyclerView(){
+        ArrayList<ItemStudent> items = new ArrayList<>();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        StudentAdapter adapter = new StudentAdapter(this, items, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        studentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                items.clear();
+                int num = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    num++;
+                    Map<String, Object> data = (Map<String, Object>) snapshot.getValue();
+                    String studentName = (String) data.get("studentName");
+                    String studentId = (String) data.get("studentId");
+
+                    items.add(new ItemStudent(String.valueOf(num), studentName, studentId));
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors
+                Toast.makeText(StudentMainActivity.this, "Failed to load Students.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onItemClicked(ItemStudent itemStudent) {
+
+    }
+
+    @Override
+    public void actionButton(ItemStudent itemStudent) {
+
+    }
+
+    //Method to create Add Dialog Box
+    public void createAddStudentDialogBox(){
+        addStudentDialogView = inflater.inflate(R.layout.add_dialogbox, null);
+        addRecordEditText = addStudentDialogView.findViewById(R.id.addRecordEditText);
+        addStudentButtonShowDialog = findViewById(R.id.addButtonShowDialog);
+        addStudentButton = addStudentDialogView.findViewById(R.id.addRecordButton);
+        cancelAddStudentButton = addStudentDialogView.findViewById(R.id.cancelAddRecordButton);
+        addDialogTextView = addStudentDialogView.findViewById(R.id.addDialogTextView);
+        addDialogTextView.setText("Add Student");
+        addRecordEditText.setHint("Student Name");
+
+        builder.setView(addStudentDialogView);
+        addDialog = builder.create();
+
+        //Show add section dialog box
+        addStudentButtonShowDialog.setOnClickListener(v -> {
+            addDialog.show();
+        });
+
+        //add section button
+        addStudentButton.setOnClickListener(v -> {
+            studentName = addRecordEditText.getText().toString().trim();
+
+            if (!studentName.isEmpty()){
+                addDialog.dismiss();
+                String studentId = studentRef.push().getKey();
+
+                Student student = new Student(studentId, studentName);
+
+                // Save the course to Firebase
+                assert studentId != null;
+                studentRef.child(studentId).setValue(student)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                addDialog.dismiss();
+
+                                // Handle success
+                                Toast.makeText(StudentMainActivity.this, "Student Added", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Handle failure
+                                Toast.makeText(StudentMainActivity.this, "Failed to Add Student", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else{
+                Toast.makeText(StudentMainActivity.this, "Please enter a student name", Toast.LENGTH_SHORT).show();
+            }
+            addRecordEditText.setText(null);
+        });
+
+        //cancel add section button
+        cancelAddStudentButton.setOnClickListener(v -> {
+            addDialog.dismiss();
+        });
     }
 }
