@@ -120,6 +120,7 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         createDrawerLayout();
         createRecyclerView();
         createAddSectionDialogBox();
+        createEditSectionDialogBox();
     }
 
     public void createDrawerLayout(){
@@ -226,13 +227,16 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
     //Section on item clicked listerner
     @Override
     public void onItemClicked(ItemSection itemSection) {
-
+        sectionId = itemSection.getSectionId();
+        sectionName = itemSection.getSectionName();
     }
 
     //action button on click listener
     @Override
     public void actionButton(ItemSection itemSection) {
-
+        sectionIdRef = sectionRef.child(itemSection.getSectionId());
+        editRecordEditText.setText(itemSection.getSectionName());
+        editDialog.show();
     }
 
     //Method to create Add Dialog Box
@@ -307,6 +311,38 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
 
         updates = new HashMap<>();
         editRecordEditText.setHint("Section Name");
-        editDialogTextView.setText("Add Course");
+        editDialogTextView.setText("Add Section");
+
+        //Edit Section button
+        editSectionButton.setOnClickListener(v -> {
+            sectionName = editRecordEditText.getText().toString().trim();
+
+            if (sectionName.isEmpty()){
+                Toast.makeText(SectionMainActivity.this, "Please enter a section", Toast.LENGTH_SHORT).show();
+            }
+
+            updates.put("sectionName", sectionName);
+
+            sectionIdRef.updateChildren(updates).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(SectionMainActivity.this, "Section Updated", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(SectionMainActivity.this, "Failed to Update Section", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        //Delete section button
+        deleteSectionButton.setOnClickListener(v -> {
+            sectionIdRef.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    editDialog.dismiss();
+                    Toast.makeText(SectionMainActivity.this, "Section Deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SectionMainActivity.this, "Failed to Delete Section", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 }

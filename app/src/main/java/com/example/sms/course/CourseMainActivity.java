@@ -221,9 +221,9 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
     @Override
     public void onItemClicked(ItemCourse itemCourse) {
         courseID = itemCourse.getCourseId();
-        collegeName = itemCourse.getCourseName();
+        courseName = itemCourse.getCourseName();
         Intent intent = new Intent(CourseMainActivity.this, SectionMainActivity.class);
-        intent.putExtra("COURSE_NAME", collegeName);
+        intent.putExtra("COURSE_NAME", courseName);
         intent.putExtra("COURSE_ID", courseID);
         intent.putExtra("COLLEGE_ID", collegeID);
         startActivity(intent);
@@ -232,8 +232,8 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
     //Action Button listeners for the course items
     @Override
     public void actionButton(ItemCourse itemCourse) {
-        courseIdRef = coursesRef.child(itemCourse.courseId);
-        editRecordEditText.setText(itemCourse.courseName);
+        courseIdRef = coursesRef.child(itemCourse.getCourseId());
+        editRecordEditText.setText(itemCourse.getCourseName());
         editDialog.show();
     }
 
