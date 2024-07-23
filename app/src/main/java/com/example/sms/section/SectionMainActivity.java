@@ -40,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SectionMainActivity extends AppCompatActivity implements SectionItemListener{
@@ -292,5 +293,20 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         cancelAddSectionButton.setOnClickListener(v -> {
             addDialog.dismiss();
         });
+    }
+
+    public void createEditSectionDialogBox(){
+        editSectionDialogView = inflater.inflate(R.layout.edit_delete_dialogbox, null);
+        editRecordEditText = editSectionDialogView.findViewById(R.id.editRecordEditText);
+        editSectionButton = editSectionDialogView.findViewById(R.id.editRecordButton);
+        deleteSectionButton = editSectionDialogView.findViewById(R.id.deleteRecordButton);
+        editDialogTextView = editSectionDialogView.findViewById(R.id.editDeleteDialogTextView);
+
+        builder.setView(editSectionDialogView);
+        editDialog = builder.create();
+
+        updates = new HashMap<>();
+        editRecordEditText.setHint("Section Name");
+        editDialogTextView.setText("Add Course");
     }
 }

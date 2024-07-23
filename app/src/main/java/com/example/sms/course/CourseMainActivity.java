@@ -302,12 +302,14 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         editRecordEditText = editCourseDialogView.findViewById(R.id.editRecordEditText);
         editCourseButton = editCourseDialogView.findViewById(R.id.editRecordButton);
         deleteCourseButton = editCourseDialogView.findViewById(R.id.deleteRecordButton);
+        editDialogTextView = editCourseDialogView.findViewById(R.id.editDeleteDialogTextView);
 
         builder.setView(editCourseDialogView);
         editDialog = builder.create();
 
         updates = new HashMap<>();
         editRecordEditText.setHint("Course Name");
+        editDialogTextView.setText("Add Course");
 
         //Edit course button
         editCourseButton.setOnClickListener(v -> {
