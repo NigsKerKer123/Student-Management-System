@@ -12,6 +12,15 @@ This Android application is a Student Management System developed using Java and
 - **Section Management**: Manage sections within courses.
 - **Student Management**: Add, update, delete, and view students associated with sections.
 
+## Setup
+
+### 1. Clone the Repository
+
+Clone the project repository to your local machine:
+
+```sh
+git clone https://github.com/yourusername/your-repository.git
+
 2. Open the Project in Android Studio
 Launch Android Studio.
 Open Project:
