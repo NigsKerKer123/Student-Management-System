@@ -119,10 +119,6 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-            
-            //Navigation item selected in OOP approach
-            navigationItemSelected = new NavigationItemSelected(CollegeMainActivity.this, logoutDialog, drawerLayout, navigationView);
-            navigationItemSelected.itemSelected();
 
             //On back to close drawer
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -148,6 +144,10 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
             createLogoutDialogBox();
             createAddCollegeDialogBox();
             createEditCollegeDialogBox();
+
+            //Navigation item selected in OOP approach
+            navigationItemSelected = new NavigationItemSelected(navigationView, drawerLayout, logoutDialog, this);
+            navigationItemSelected.itemSelected();
         }
 
         //to toggle drawer

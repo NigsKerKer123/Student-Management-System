@@ -19,28 +19,38 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
 import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
+import com.example.sms.student.ItemStudent;
+import com.example.sms.student.StudentAdapter;
+import com.example.sms.student.StudentMainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
-public class DisplayAllMainActivity extends AppCompatActivity {
+public class DisplayAllMainActivity extends AppCompatActivity implements AllItemListener{
     //firebase authentication
     private FirebaseAuth mAuth;
     FirebaseUser user;
 
     //firebase database
     FirebaseDatabase database;
-    DatabaseReference databaseReference, idRef;
+    DatabaseReference databaseReference, dataRef ,idRef;
 
     //UI
     DrawerLayout drawerLayout;
@@ -54,7 +64,7 @@ public class DisplayAllMainActivity extends AppCompatActivity {
     LayoutInflater inflater;
     FloatingActionButton addButtonShowDialog;
 
-    //Generic item (previously College)
+    //Generic item
     EditText addNameEditText, editNameEditText;
     String itemName;
     String itemId;
@@ -62,6 +72,9 @@ public class DisplayAllMainActivity extends AppCompatActivity {
 
     //Navigation
     NavigationItemSelected navigationItemSelected;
+
+    //data came through intent
+    String field;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,20 +90,23 @@ public class DisplayAllMainActivity extends AppCompatActivity {
         //para ma ilisan ang title sa activity
         getSupportActionBar().setTitle("All");
 
+        field = getIntent().getStringExtra("FIELD");
+
         //Firebase authentication initialization
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        //firebase database initialization
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("Colleges");
+        //Firebase database initialization
+        dataRef = FirebaseDatabase.getInstance().getReference().child("Colleges");
 
         //Dialog box initalization
         inflater = getLayoutInflater();
         builder = new AlertDialog.Builder(DisplayAllMainActivity.this);
 
         //Method Calls to create objects
+        createLogoutDialogBox();
         createDrawerLayout();
+        createRecyclerView();
     }
 
     //method to create sidebar
@@ -109,7 +125,7 @@ public class DisplayAllMainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         //Navigation item selected in OOP approach
-        navigationItemSelected = new NavigationItemSelected(DisplayAllMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected = new NavigationItemSelected(navigationView, drawerLayout, logoutDialog, this);
         navigationItemSelected.itemSelected();
     }
 
@@ -145,6 +161,91 @@ public class DisplayAllMainActivity extends AppCompatActivity {
         //close logout dialogbox
         btnNo.setOnClickListener(v -> {
             logoutDialog.dismiss();
+        });
+    }
+
+    @Override
+    public void onItemClicked(ItemAll itemAll) {
+        Toast.makeText(this, itemAll.getId(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void actionButton(ItemAll itemAll) {
+        Toast.makeText(this, itemAll.getId(), Toast.LENGTH_SHORT).show();
+    }
+
+    //Method to create recycler view
+    public void createRecyclerView(){
+        ArrayList<ItemAll> items = new ArrayList<>();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        AllAdapter adapter = new AllAdapter(this, items, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        dataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                items.clear();
+                int num = 0;
+
+                if (Objects.equals(field, "courses")) {
+                    getSupportActionBar().setTitle("All Courses");
+                    for (DataSnapshot collegeSnapshot : dataSnapshot.getChildren()) {
+                        DataSnapshot coursesSnapshot = collegeSnapshot.child("Courses");
+                        for (DataSnapshot courseSnapshot : coursesSnapshot.getChildren()) {
+                            num++;
+                            Map<String, Object> data = (Map<String, Object>) courseSnapshot.getValue();
+                            String courseName = (String) data.get("courseName");
+                            String courseId = courseSnapshot.getKey();
+
+                            items.add(new ItemAll(String.valueOf(num), courseName, courseId));
+                        }
+                    }
+                } else if (Objects.equals(field, "sections")) {
+                    getSupportActionBar().setTitle("All Sections");
+                    for (DataSnapshot collegeSnapshot : dataSnapshot.getChildren()) {
+                        DataSnapshot coursesSnapshot = collegeSnapshot.child("Courses");
+                        for (DataSnapshot courseSnapshot : coursesSnapshot.getChildren()) {
+                            DataSnapshot sectionsSnapshot = courseSnapshot.child("Section");
+                            for (DataSnapshot sectionSnapshot : sectionsSnapshot.getChildren()) {
+                                num++;
+                                Map<String, Object> data = (Map<String, Object>) sectionSnapshot.getValue();
+                                String sectionName = (String) data.get("sectionName");
+                                String sectionId = sectionSnapshot.getKey();
+
+                                items.add(new ItemAll(String.valueOf(num), sectionName, sectionId));
+                            }
+                        }
+                    }
+                } else if (Objects.equals(field, "students")) {
+                    getSupportActionBar().setTitle("All Students");
+                    for (DataSnapshot collegeSnapshot : dataSnapshot.getChildren()) {
+                        DataSnapshot coursesSnapshot = collegeSnapshot.child("Courses");
+                        for (DataSnapshot courseSnapshot : coursesSnapshot.getChildren()) {
+                            DataSnapshot sectionsSnapshot = courseSnapshot.child("Section");
+                            for (DataSnapshot sectionSnapshot : sectionsSnapshot.getChildren()) {
+                                DataSnapshot studentsSnapshot = sectionSnapshot.child("Students");
+                                for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                                    num++;
+                                    Map<String, Object> data = (Map<String, Object>) studentSnapshot.getValue();
+                                    String studentName = (String) data.get("studentName");
+                                    String studentId = studentSnapshot.getKey();
+
+                                    items.add(new ItemAll(String.valueOf(num), studentName, studentId));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors
+                Toast.makeText(DisplayAllMainActivity.this, "Failed to load Records.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

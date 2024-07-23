@@ -140,7 +140,7 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         getSupportActionBar().setHomeButtonEnabled(true);
 
         //Navigation item selected in OOP approach
-        navigationItemSelected = new NavigationItemSelected(SectionMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected = new NavigationItemSelected(navigationView, drawerLayout, logoutDialog, this);
         navigationItemSelected.itemSelected();
     }
 

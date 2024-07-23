@@ -17,11 +17,13 @@ public class NavigationItemSelected {
     AlertDialog logoutDialog;
     Context context;
 
-    public NavigationItemSelected(Context context, AlertDialog logoutDialog, DrawerLayout drawerLayout, NavigationView navigationView) {
-        this.context = context;
-        this.logoutDialog = logoutDialog;
-        this.drawerLayout = drawerLayout;
+    String field;
+
+    public NavigationItemSelected(NavigationView navigationView, DrawerLayout drawerLayout, AlertDialog logoutDialog, Context context) {
         this.navigationView = navigationView;
+        this.drawerLayout = drawerLayout;
+        this.logoutDialog = logoutDialog;
+        this.context = context;
     }
 
     public void itemSelected(){
@@ -33,12 +35,18 @@ public class NavigationItemSelected {
                 context.startActivity(intent);
             } else if (id == R.id.course){
                 Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                field = "courses";
+                intent.putExtra("FIELD", field);
                 context.startActivity(intent);
             } else if (id == R.id.section){
                 Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                field = "sections";
+                intent.putExtra("FIELD", field);
                 context.startActivity(intent);
             } else if (id == R.id.student){
                 Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                field = "students";
+                intent.putExtra("FIELD", field);
                 context.startActivity(intent);
             } else if (id == R.id.logout){
                 logoutDialog.show();

@@ -1,11 +1,11 @@
 package com.example.sms.All;
 
-public class itemAll {
+public class ItemAll {
     String number;
     String name;
     String id;
 
-    public itemAll(String number, String name, String id) {
+    public ItemAll(String number, String name, String id) {
         this.name = name;
         this.number = number;
         this.id = id;

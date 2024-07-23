@@ -145,7 +145,7 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
         getSupportActionBar().setHomeButtonEnabled(true);
 
         //Navigation item selected in OOP approach
-        navigationItemSelected = new NavigationItemSelected(StudentMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected = new NavigationItemSelected(navigationView, drawerLayout, logoutDialog, this);
         navigationItemSelected.itemSelected();
     }
 

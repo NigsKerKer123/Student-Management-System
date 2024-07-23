@@ -134,7 +134,7 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         getSupportActionBar().setHomeButtonEnabled(true);
 
         //Navigation item selected in OOP approach
-        navigationItemSelected = new NavigationItemSelected(CourseMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected = new NavigationItemSelected(navigationView, drawerLayout, logoutDialog, this);
         navigationItemSelected.itemSelected();
     }
 
