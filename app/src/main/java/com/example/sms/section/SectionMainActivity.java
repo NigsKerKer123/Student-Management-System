@@ -27,6 +27,7 @@ import com.example.sms.Login;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
 import com.example.sms.course.ItemCourse;
+import com.example.sms.student.StudentMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -229,6 +230,12 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
     public void onItemClicked(ItemSection itemSection) {
         sectionId = itemSection.getSectionId();
         sectionName = itemSection.getSectionName();
+        Intent intent = new Intent(SectionMainActivity.this, StudentMainActivity.class);
+        intent.putExtra("SECTION_NAME", sectionName);
+        intent.putExtra("SECTION_ID", sectionId);
+        intent.putExtra("COURSE_ID", courseId);
+        intent.putExtra("COLLEGE_ID", collegeId);
+        startActivity(intent);
     }
 
     //action button on click listener
