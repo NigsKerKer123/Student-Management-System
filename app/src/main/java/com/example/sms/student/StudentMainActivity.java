@@ -184,4 +184,9 @@ public class StudentMainActivity extends AppCompatActivity {
             logoutDialog.dismiss();
         });
     }
+
+    //Method to create recycler view for student list
+    public void createRecyclerView(){
+
+    }
 }
