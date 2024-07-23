@@ -14,4 +14,4 @@ This Android application is a Student Management System developed using Java and
 
 ## Setup
 
-google it XD
+google it >_<
