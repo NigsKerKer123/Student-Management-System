@@ -3,13 +3,12 @@ package com.example.sms;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.sms.All.DisplayAllMainActivity;
 import com.example.sms.college.CollegeMainActivity;
-import com.example.sms.course.CourseMainActivity;
 import com.google.android.material.navigation.NavigationView;
 
 public class NavigationItemSelected {
@@ -33,11 +32,14 @@ public class NavigationItemSelected {
                 Intent intent = new Intent(context, CollegeMainActivity.class);
                 context.startActivity(intent);
             } else if (id == R.id.course){
-                Toast.makeText(context, "Courses", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                context.startActivity(intent);
             } else if (id == R.id.section){
-                Toast.makeText(context, "Sections", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                context.startActivity(intent);
             } else if (id == R.id.student){
-                Toast.makeText(context, "Students", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, DisplayAllMainActivity.class);
+                context.startActivity(intent);
             } else if (id == R.id.logout){
                 logoutDialog.show();
             }

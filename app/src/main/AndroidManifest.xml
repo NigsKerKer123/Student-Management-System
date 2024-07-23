@@ -15,6 +15,9 @@
         android:theme="@style/Theme.SMS"
         tools:targetApi="31">
         <activity
+            android:name=".All.DisplayAllMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".student.StudentMainActivity"
             android:exported="false" />
         <activity
