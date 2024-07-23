@@ -15,12 +15,15 @@
         android:theme="@style/Theme.SMS"
         tools:targetApi="31">
         <activity
+            android:name=".section.SectionMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".course.CourseMainActivity"
             android:exported="false" />
         <activity
             android:name=".Register"
             android:exported="true"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".Login"
             android:exported="true"
