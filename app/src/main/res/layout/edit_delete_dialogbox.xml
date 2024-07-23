@@ -27,17 +27,17 @@
 
         <EditText
             android:id="@+id/editRecordEditText"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/custom_input"
             android:drawablePadding="10dp"
-            android:layout_marginTop="10dp"
             android:hint="College Name"
             android:inputType="textEmailAddress"
             android:minHeight="48dp"
             android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/editDeleteDialogTextView"
-            app:layout_constraintStart_toStartOf="@+id/editDeleteDialogTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editDeleteDialogTextView" />
 
         <LinearLayout

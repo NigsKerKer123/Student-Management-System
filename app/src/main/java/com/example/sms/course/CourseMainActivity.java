@@ -9,11 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
+import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
 import com.example.sms.section.SectionMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -71,6 +72,9 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
 
     //College
     String collegeID, collegeName;
+
+    //Navigation
+    NavigationItemSelected navigationItemSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,24 +133,9 @@ public class CourseMainActivity extends AppCompatActivity implements CourseItemL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.college){
-                Toast.makeText(CourseMainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.course){
-                Toast.makeText(CourseMainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.section){
-                Toast.makeText(CourseMainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.student){
-                Toast.makeText(CourseMainActivity.this, "Students", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.logout){
-                logoutDialog.show();
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+        //Navigation item selected in OOP approach
+        navigationItemSelected = new NavigationItemSelected(CourseMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected.itemSelected();
     }
 
     //to toggle drawer

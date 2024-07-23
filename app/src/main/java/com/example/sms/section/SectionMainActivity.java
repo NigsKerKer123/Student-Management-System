@@ -9,14 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,9 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
+import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
-import com.example.sms.course.CourseMainActivity;
-import com.example.sms.course.ItemCourse;
 import com.example.sms.student.StudentMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -77,6 +75,9 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
 
     //College data came from the course activity through intent
     String collegeId;
+
+    //Navigation
+    NavigationItemSelected navigationItemSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,24 +139,9 @@ public class SectionMainActivity extends AppCompatActivity implements SectionIte
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.college) {
-                Toast.makeText(SectionMainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.course) {
-                Toast.makeText(SectionMainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.section) {
-                Toast.makeText(SectionMainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.student) {
-                Toast.makeText(SectionMainActivity.this, "Students", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.logout) {
-                logoutDialog.show();
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+        //Navigation item selected in OOP approach
+        navigationItemSelected = new NavigationItemSelected(SectionMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected.itemSelected();
     }
 
     //to toggle drawer

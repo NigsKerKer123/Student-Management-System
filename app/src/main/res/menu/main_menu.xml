@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:checkableBehavior="single">
         <item android:id="@+id/college"
-            android:title="Colleges"
+            android:title="Colleges (Home)"
             android:icon="@drawable/ic_college"/>
 
         <item android:id="@+id/course"

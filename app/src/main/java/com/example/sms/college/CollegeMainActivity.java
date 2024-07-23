@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
+import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,6 +69,9 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
         String collegeName;
         String collegeId;
         Map<String, Object> updates;
+
+        //Navigation
+        NavigationItemSelected navigationItemSelected;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -115,25 +119,10 @@ public class CollegeMainActivity extends AppCompatActivity implements CollegeIte
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-
-            navigationView.setNavigationItemSelectedListener(item -> {
-                int id = item.getItemId();
-
-                if (id == R.id.college){
-                    Toast.makeText(CollegeMainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.course){
-                    Toast.makeText(CollegeMainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.section){
-                    Toast.makeText(CollegeMainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.student){
-                    Toast.makeText(CollegeMainActivity.this, "Students", Toast.LENGTH_SHORT).show();
-                } else if (id == R.id.logout){
-                    logoutDialog.show();
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            });
+            
+            //Navigation item selected in OOP approach
+            navigationItemSelected = new NavigationItemSelected(CollegeMainActivity.this, logoutDialog, drawerLayout, navigationView);
+            navigationItemSelected.itemSelected();
 
             //On back to close drawer
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {

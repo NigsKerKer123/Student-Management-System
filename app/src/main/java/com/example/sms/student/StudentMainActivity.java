@@ -9,14 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,11 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sms.Login;
+import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
-import com.example.sms.section.ItemSection;
-import com.example.sms.section.Section;
-import com.example.sms.section.SectionAdapter;
-import com.example.sms.section.SectionMainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -82,6 +78,9 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
     //Section data came from the course activity through intent
     String sectionId, sectionName;
 
+    //Navigation
+    NavigationItemSelected navigationItemSelected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,8 +123,8 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
         builder = new AlertDialog.Builder(StudentMainActivity.this);
 
         //method calls to create objects
-        createDrawerLayout();
         createLogoutDialogBox();
+        createDrawerLayout();
         createRecyclerView();
         createAddStudentDialogBox();
         createEditStudentDialogBox();
@@ -145,24 +144,9 @@ public class StudentMainActivity extends AppCompatActivity implements StudentIte
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.college) {
-                Toast.makeText(StudentMainActivity.this, "Colleges", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.course) {
-                Toast.makeText(StudentMainActivity.this, "Courses", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.section) {
-                Toast.makeText(StudentMainActivity.this, "Sections", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.student) {
-                Toast.makeText(StudentMainActivity.this, "Students", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.logout) {
-                logoutDialog.show();
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+        //Navigation item selected in OOP approach
+        navigationItemSelected = new NavigationItemSelected(StudentMainActivity.this, logoutDialog, drawerLayout, navigationView);
+        navigationItemSelected.itemSelected();
     }
 
     //to toggle drawer
