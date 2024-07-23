@@ -11,3 +11,7 @@ This Android application is a Student Management System developed using Java and
 - **Course Management**: Add, update, delete, and view courses associated with colleges.
 - **Section Management**: Manage sections within courses.
 - **Student Management**: Add, update, delete, and view students associated with sections.
+
+## Setup
+
+google it XD
