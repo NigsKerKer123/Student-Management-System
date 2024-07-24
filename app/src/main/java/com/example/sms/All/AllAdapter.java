@@ -2,6 +2,7 @@ package com.example.sms.All;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -39,7 +40,9 @@ public class AllAdapter extends RecyclerView.Adapter<AllViewHolder>{
         holder.id.setText(itemAll.getId());
 
         holder.mainLayout.setOnClickListener(v -> listener.onItemClicked(itemAll));
-        holder.actionButton.setOnClickListener(v -> listener.actionButton(itemAll));
+        //holder.actionButton.setOnClickListener(v -> listener.actionButton(itemAll));
+
+        holder.actionButton.setVisibility(View.GONE);
     }
 
     @Override

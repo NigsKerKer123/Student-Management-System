@@ -26,6 +26,7 @@ import com.example.sms.Login;
 import com.example.sms.NavigationItemSelected;
 import com.example.sms.R;
 import com.example.sms.course.CourseMainActivity;
+import com.example.sms.section.SectionMainActivity;
 import com.example.sms.student.ItemStudent;
 import com.example.sms.student.StudentAdapter;
 import com.example.sms.student.StudentMainActivity;
@@ -40,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,26 +51,20 @@ public class DisplayAllMainActivity extends AppCompatActivity implements AllItem
     FirebaseUser user;
 
     //firebase database
-    FirebaseDatabase database;
-    DatabaseReference databaseReference, dataRef ,idRef;
+    DatabaseReference dataRef;
 
     //UI
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
-    TextView textViewEmail, addDialogTextView, editDeleteDialogTextView;
-    View logoutDialogView, addDialogView, editDialogView;
-    Button btnYes, btnNo, addButton, cancelAddButton, editButton, deleteButton;
+    TextView textViewEmail, editDeleteDialogTextView;
+    View logoutDialogView, editDialogView;
+    Button btnYes, btnNo, editButton, deleteButton;
     AlertDialog.Builder builder;
-    AlertDialog logoutDialog, addDialog, editDialog;
+    AlertDialog logoutDialog, editDialog;
     LayoutInflater inflater;
-    FloatingActionButton addButtonShowDialog;
 
-    //Generic item
-    EditText addNameEditText, editNameEditText;
-    String itemName;
     String itemId;
-    Map<String, Object> updates;
 
     //Navigation
     NavigationItemSelected navigationItemSelected;
@@ -99,7 +95,7 @@ public class DisplayAllMainActivity extends AppCompatActivity implements AllItem
         //Firebase database initialization
         dataRef = FirebaseDatabase.getInstance().getReference().child("Colleges");
 
-        //Dialog box initalization
+        //Dialog box initialization
         inflater = getLayoutInflater();
         builder = new AlertDialog.Builder(DisplayAllMainActivity.this);
 
@@ -171,7 +167,6 @@ public class DisplayAllMainActivity extends AppCompatActivity implements AllItem
 
     @Override
     public void actionButton(ItemAll itemAll) {
-        Toast.makeText(this, itemAll.getId(), Toast.LENGTH_SHORT).show();
     }
 
     //Method to create recycler view
